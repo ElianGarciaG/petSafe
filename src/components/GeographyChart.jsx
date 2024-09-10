@@ -1,14 +1,15 @@
-import { useTheme } from "@mui/material";
-import { ResponsiveChoropleth } from "@nivo/geo";
-import { geoFeatures } from "../data/mockGeoFeatures";
-import { tokens } from "../theme";
-import { mockGeographyData as data } from "../data/mockData";
+//import { useTheme } from "@mui/material";
+//import { ResponsiveChoropleth } from "@nivo/geo";
+//import { geoFeatures } from "../data/mockGeoFeatures";
+//import { tokens } from "../theme";
+//import { mockGeographyData as data } from "../data/mockData";
 
 const GeographyChart = ({ isDashboard = false }) => {
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
+  //const theme = useTheme();
+  //const colors = tokens(theme.palette.mode);
   return (
-    <ResponsiveChoropleth
+    <></>
+    /*<ResponsiveChoropleth
       data={data}
       theme={{
         axis: {
@@ -78,7 +79,7 @@ const GeographyChart = ({ isDashboard = false }) => {
             ]
           : undefined
       }
-    />
+    />*/
   );
 };
 

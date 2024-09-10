@@ -1,14 +1,15 @@
-import { useTheme } from "@mui/material";
-import { ResponsiveBar } from "@nivo/bar";
-import { tokens } from "../theme";
-import { mockBarData as data } from "../data/mockData";
+//import { useTheme } from "@mui/material";
+//import { ResponsiveBar } from "@nivo/bar";
+//import { tokens } from "../theme";
+//import { mockBarData as data } from "../data/mockData";
 
 const BarChart = ({ isDashboard = false }) => {
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
+  //const theme = useTheme();
+  //const colors = tokens(theme.palette.mode);
 
   return (
-    <ResponsiveBar
+    <></>
+    /*<ResponsiveBar
       data={data}
       theme={{
         // added
@@ -123,7 +124,7 @@ const BarChart = ({ isDashboard = false }) => {
       barAriaLabel={function (e) {
         return e.id + ": " + e.formattedValue + " in country: " + e.indexValue;
       }}
-    />
+    />*/
   );
 };
 
