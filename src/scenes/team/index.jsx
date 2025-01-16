@@ -1,31 +1,53 @@
 import { Box, /*Typography,*/ useTheme } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
-import { mockDataTeam } from "../../data/mockData";
 //import AdminPanelSettingsOutlinedIcon from "@mui/icons-material/AdminPanelSettingsOutlined";
 //import LockOpenOutlinedIcon from "@mui/icons-material/LockOpenOutlined";
 //import SecurityOutlinedIcon from "@mui/icons-material/SecurityOutlined";
 import Header from "../../components/Header";
+import React, {useState, useEffect} from "react";
 
 const Team = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+
+  // Estado para los datos del DataGrid
+  const [rows, setRows] = useState([]);
+
+  // Hook useEffect para hacer el fetch al montar el componente
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(process.env.REACT_APP_URL_DATA_ESP ?? "http://localhost:6421/esp/data"); // Reemplaza con tu URL
+        if (!response.ok) {
+          throw new Error("Error al obtener los datos");
+        }
+        const data = await response.json();
+        setRows(data); // Asigna los datos obtenidos al estado
+      } catch (error) {
+        console.error("Error al hacer el fetch:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   const columns = [
     { field: "id", headerName: "ID" },
     {
-      field: "name",
-      headerName: "Nombre ubicación",
+      field: "latitude",
+      headerName: "Latitud",
       flex: 1,
       cellClassName: "name-column--cell",
     },
     {
-      field: "date",
-      headerName: "Fecha registro",
+      field: "longitude",
+      headerName: "Longitud",
       flex: 1,
     },
     {
-      field: "time",
-      headerName: "Hora registro",
+      field: "registrationDate",
+      headerName: "Fecha registro",
       flex: 1,
     } /*,
     {
@@ -101,7 +123,7 @@ const Team = () => {
           },
         }}
       >
-        <DataGrid checkboxSelection rows={mockDataTeam} columns={columns} />
+        <DataGrid checkboxSelection rows={rows} columns={columns} />
       </Box>
     </Box>
   );
