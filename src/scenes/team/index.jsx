@@ -5,7 +5,7 @@ import { tokens } from "../../theme";
 //import LockOpenOutlinedIcon from "@mui/icons-material/LockOpenOutlined";
 //import SecurityOutlinedIcon from "@mui/icons-material/SecurityOutlined";
 import Header from "../../components/Header";
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 
 const Team = () => {
   const theme = useTheme();
@@ -18,7 +18,10 @@ const Team = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(process.env.REACT_APP_URL_DATA_ESP ?? "http://localhost:6421/esp/data"); // Reemplaza con tu URL
+        const url =
+          process.env.REACT_APP_URL_DATA_ESP ??
+          "http://localhost:6421/esp/data";
+        const response = await fetch(`${url}?numRecords=100`); // Reemplaza con tu URL
         if (!response.ok) {
           throw new Error("Error al obtener los datos");
         }
