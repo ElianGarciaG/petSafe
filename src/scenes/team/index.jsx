@@ -7,6 +7,23 @@ import { tokens } from "../../theme";
 import Header from "../../components/Header";
 import React, { useState, useEffect } from "react";
 
+const getAddressFromCoords = async (lat, lon) => {
+  try {
+    const response = await fetch(
+      `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}`
+    );
+    const data = await response.json();
+    const city =
+      data.address.city || data.address.town || data.address.village || "Ciudad desconocida";
+    const neighborhood =
+      data.address.suburb || data.address.neighbourhood || "Barrio desconocido";
+    return { city, neighborhood };
+  } catch (error) {
+    console.error("Error al obtener dirección:", error);
+    return { city: "Ciudad desconocida", neighborhood: "Barrio desconocido" };
+  }
+};
+
 const Team = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -19,14 +36,28 @@ const Team = () => {
     const fetchData = async () => {
       try {
         const url =
-          process.env.REACT_APP_URL_DATA_ESP ??
-          "http://localhost:6421/esp/data";
-        const response = await fetch(`${url}?numRecords=100`); // Reemplaza con tu URL
-        if (!response.ok) {
-          throw new Error("Error al obtener los datos");
-        }
+          process.env.REACT_APP_URL_DATA_ESP ?? "http://localhost:6421/esp/data";
+        const response = await fetch(`${url}?numRecords=100`);
+        if (!response.ok) throw new Error("Error al obtener los datos");
         const data = await response.json();
-        setRows(data); // Asigna los datos obtenidos al estado
+
+        // Enriquecer cada fila con ciudad y barrio
+        const enrichedData = await Promise.all(
+          data.map(async (item) => {
+            const { city, neighborhood } = await getAddressFromCoords(
+              item.latitude,
+              item.longitude
+            );
+            return {
+              ...item,
+              city,
+              neighborhood,
+              id: item.id ?? `${item.latitude}-${item.longitude}`, // Asegura ID único
+            };
+          })
+        );
+
+        setRows(enrichedData);
       } catch (error) {
         console.error("Error al hacer el fetch:", error);
       }
@@ -52,43 +83,17 @@ const Team = () => {
       field: "registrationDate",
       headerName: "Fecha registro",
       flex: 1,
-    } /*,
-    {
-      field: "email",
-      headerName: "Email",
-      flex: 1,
-    },
-    {
-      field: "accessLevel",
-      headerName: "Access Level",
-      flex: 1,
-      renderCell: ({ row: { access } }) => {
-        return (
-          <Box
-            width="60%"
-            m="0 auto"
-            p="5px"
-            display="flex"
-            justifyContent="center"
-            backgroundColor={
-              access === "admin"
-                ? colors.greenAccent[600]
-                : access === "manager"
-                ? colors.greenAccent[700]
-                : colors.greenAccent[700]
-            }
-            borderRadius="4px"
-          >
-            {access === "admin" && <AdminPanelSettingsOutlinedIcon />}
-            {access === "manager" && <SecurityOutlinedIcon />}
-            {access === "user" && <LockOpenOutlinedIcon />}
-            <Typography color={colors.grey[100]} sx={{ ml: "5px" }}>
-              {access}
-            </Typography>
-          </Box>
-        );
-      },
-    },*/,
+    },{
+    field: "city",
+    headerName: "Ciudad",
+    flex: 1,
+  },
+  {
+    field: "neighborhood",
+    headerName: "Barrio",
+    flex: 1,
+  },
+
   ];
 
   return (
