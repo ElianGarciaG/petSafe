@@ -13,7 +13,7 @@ L.Icon.Default.mergeOptions({
 });
 
 const MapComponent = () => {
-  const [locations, setLocations] = useState([]);
+
   const [lastPosition, setLastPosition] = useState(null);
 
   // Fetch para obtener datos de longitud y latitud
@@ -26,7 +26,6 @@ const MapComponent = () => {
         if (!response.ok) throw new Error("Error al obtener las ubicaciones");
         const data = await response.json();
 
-        setLocations(data); // Guarda todas las ubicaciones
         setLastPosition(data[data.length - 1]); // Selecciona la última posición
       } catch (error) {
         console.error("Error al cargar las ubicaciones:", error);
